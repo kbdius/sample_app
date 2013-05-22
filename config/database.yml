@@ -12,7 +12,7 @@ development:
   adapter: postgresql
   encoding: unicode
   host: localhost
-  database: sample_app
+  database: sample_app_dev
   username: kurtbrown
   password:
 

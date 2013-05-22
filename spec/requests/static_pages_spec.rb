@@ -33,6 +33,18 @@ describe "Static Pages" do
 
     it_should_behave_like "all static pages"
     it { should_not have_selector 'title', text: '| Home' }
+    it { should have_link('Sign up now!') }
+
+    describe "Home page after sign in" do
+
+      let(:user) { FactoryGirl.create(:user) }
+      before do
+        sign_in user
+        visit root_path
+      end 
+      it { should_not have_link('Sign up now!') }
+
+    end
 
   end
 
