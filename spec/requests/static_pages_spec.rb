@@ -35,15 +35,20 @@ describe "Static Pages" do
     it { should_not have_selector 'title', text: '| Home' }
     it { should have_link('Sign up now!') }
 
-    describe "Home page after sign in" do
-
+    describe "for signed-in users" do
       let(:user) { FactoryGirl.create(:user) }
       before do
+        FactoryGirl.create(:micropost, user: user, content: "Lorem ipsum")
+        FactoryGirl.create(:micropost, user: user, content: "Dolor sit amet")
         sign_in user
         visit root_path
-      end 
-      it { should_not have_link('Sign up now!') }
+      end
 
+      it "should render the user's feed" do
+        user.feed.each do |item|
+          page.should have_selector("li##{item.id}", text: item.content)
+        end
+      end
     end
 
   end
