@@ -1,12 +1,11 @@
 class UsersController < ApplicationController
-  before_filter :signed_in_user, only: [:index, :edit, :update]
-  before_filter :unsigned_in_user, only: [:new, :create]
+  before_filter :signed_in_user, only: [:index, :edit, :update, :destroy, :following, :followers]
   before_filter :correct_user,   only: [:edit, :update]
   before_filter :admin_user,     only: :destroy
 
   def show
     @user = User.find(params[:id])
-    @microposts = @user.microposts.paginate(page: params[:page], :per_page => 10)
+    @microposts = @user.microposts.paginate(page: params[:page], :per_page => 5)
   end
 
   def new
@@ -47,14 +46,21 @@ class UsersController < ApplicationController
     redirect_to users_url
   end
 
-  private
+  def following
+    @title = "Following"
+    @user = User.find(params[:id])
+    @users = @user.followed_users.paginate(page: params[:page], :per_page => 5)
+    render 'show_follow'
+  end
 
-    def unsigned_in_user
-      if signed_in?
-        store_location
-        redirect_to root_path, notice: "You are already signed in."
-      end
-    end
+  def followers
+    @title = "Followers"
+    @user = User.find(params[:id])
+    @users = @user.followers.paginate(page: params[:page], :per_page => 5)
+    render 'show_follow'
+  end
+
+  private
 
     def correct_user
       @user = User.find(params[:id])
